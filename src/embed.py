@@ -34,27 +34,30 @@ def generate_embeddings(input_file="trending_repos.jsonl", output_file=None):
         
     print(f"Loaded {len(repos)} repositories from {input_file}.")
     
-    for i, repo in enumerate(repos):
-        if repo.get("embedding"):
-            print(f"[{i+1}/{len(repos)}] Embedding already exists for: {repo.get('full_name')}, skipping...")
-            continue
-            
-        repo_name = repo.get('full_name')
-        print(f"[{i+1}/{len(repos)}] Generating embedding for: {repo_name}...")
+    repos_to_embed = [repo for repo in repos if not repo.get("embedding")]
+    
+    if len(repos_to_embed) < len(repos):
+        print(f"Skipping {len(repos) - len(repos_to_embed)} repositories that already have embeddings.")
         
-        text_to_embed = format_repo_text(repo)
+    batch_size = 50
+    for i in range(0, len(repos_to_embed), batch_size):
+        batch = repos_to_embed[i:i + batch_size]
+        print(f"[{i+1} - {i+len(batch)} / {len(repos_to_embed)}] Generating embeddings for batch...")
+        
+        inputs = [format_repo_text(repo) for repo in batch]
         
         try:
             response = client.embeddings.create(
-                input=text_to_embed,
+                input=inputs,
                 model="text-embedding-3-small"
             )
-            embedding = response.data[0].embedding
-            repo["embedding"] = embedding
-            
+            for j, item in enumerate(response.data):
+                batch[j]["embedding"] = item.embedding
+                
         except Exception as e:
-            print(f"Error generating embedding for {repo_name}: {e}")
-            repo["embedding"] = None
+            print(f"Error generating embeddings for batch {i//batch_size + 1}: {e}")
+            for repo in batch:
+                repo["embedding"] = None
 
     save_path = output_file if output_file else input_file
     with open(save_path, "w", encoding="utf-8") as f:

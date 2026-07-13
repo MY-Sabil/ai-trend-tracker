@@ -1,9 +1,10 @@
 import os
 import json
 import numpy as np
+from datetime import datetime
 from sklearn.cluster import HDBSCAN
 
-def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_cluster_size=2):
+def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_cluster_size=2, keep_archive=False):
     """
     Reads repositories with embeddings from a JSONL file,
     clusters them using HDBSCAN, and updates the file with a 'cluster_id' key.
@@ -56,6 +57,19 @@ def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_clust
             f.write(json.dumps(repo, ensure_ascii=False) + '\n')
             
     print(f"\nDone! Appended cluster IDs to {save_path}")
+
+    if keep_archive:
+        archive_dir = os.path.join("archive", "clustered")
+        os.makedirs(archive_dir, exist_ok=True)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        archive_filename = f"{len(repos)}_repos_{timestamp}.jsonl"
+        archive_path = os.path.join(archive_dir, archive_filename)
+        
+        with open(archive_path, "w", encoding="utf-8") as f:
+            for repo in repos:
+                f.write(json.dumps(repo, ensure_ascii=False) + '\n')
+                
+        print(f"Archived final copy saved to {archive_path}")
 
 if __name__ == "__main__":
     cluster_repos()

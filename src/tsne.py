@@ -48,23 +48,30 @@ def visualize_clusters(input_file="trending_repos.jsonl", output_image="clusters
     
     plt.figure(figsize=(12, 8))
     
+    category_names = {}
+    for repo in repos:
+        c_id = repo.get("cluster_id", -1)
+        if c_id != -1 and c_id not in category_names:
+            category_names[c_id] = repo.get("category_label", f"Cluster {c_id}")
+
     unique_labels = set(labels)
     for cluster_id in unique_labels:
+        if cluster_id == -1:
+            continue
+            
         indices = [i for i, lbl in enumerate(labels) if lbl == cluster_id]
         cluster_points = X_2d[indices]
         
-        if cluster_id == -1:
-            plt.scatter(
-                cluster_points[:, 0], cluster_points[:, 1], 
-                c='lightgrey', marker='x', s=100, label='Noise (-1)'
-            )
-        else:
-            plt.scatter(
-                cluster_points[:, 0], cluster_points[:, 1], 
-                s=100, label=f'Cluster {cluster_id}'
-            )
+        label_name = category_names.get(cluster_id, f'Cluster {cluster_id}')
+        plt.scatter(
+            cluster_points[:, 0], cluster_points[:, 1], 
+            s=100, label=label_name
+        )
             
     for i, name in enumerate(names):
+        if labels[i] == -1:
+            continue
+            
         plt.annotate(
             name, 
             (X_2d[i, 0], X_2d[i, 1]), 
@@ -77,11 +84,12 @@ def visualize_clusters(input_file="trending_repos.jsonl", output_image="clusters
     plt.title("t-SNE Visualization of Repository Clusters")
     plt.xlabel("t-SNE Component 1")
     plt.ylabel("t-SNE Component 2")
-    plt.legend()
+    
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     plt.grid(True, linestyle='--', alpha=0.5)
     
     plt.tight_layout()
-    plt.savefig(output_image, dpi=300)
+    plt.savefig(output_image, dpi=300, bbox_inches='tight')
     print(f"Visualization saved successfully to {output_image}")
 
 if __name__ == "__main__":
