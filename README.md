@@ -6,6 +6,8 @@ It answers the question: *"What's actually heating up in AI right now, based on 
 
 By letting clusters emerge organically rather than forcing repositories into hardcoded categories (like "LLMs" or "computer vision"), the tracker discovers brand-new AI categories as soon as they appear in the wild.
 
+> **Curious about current 2026 AI trends (YTD July)?** Check out the visual map in [`clusters.png`](clusters.png) or dive into the exported data in the [`trends/`](trends/) directory.
+
 ## Features & Pipeline
 The pipeline runs through a robust 7-step process orchestrated by `main.py`:
 
