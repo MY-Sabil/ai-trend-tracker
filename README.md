@@ -12,7 +12,7 @@ The pipeline runs through a robust 7-step process orchestrated by `main.py`:
 
 1. **Ingestion (`src/ingest.py`)**: Fetches trending AI-related repositories using the GitHub Search API. Avoids brittle web scraping, automatically paginates, and pulls down READMEs, descriptions, and metadata.
 2. **Embeddings (`src/embed.py`)**: Uses OpenAI's `text-embedding-3-small` model to generate high-quality vector embeddings of each repository's text. Requests are heavily batched for speed and to avoid API rate limits.
-3. **Clustering (`src/cluster.py`)**: Groups the repositories into emergent categories using **HDBSCAN**. This allows us to discover natural clusters without needing to pre-define how many clusters exist, while smartly isolating noise.
+3. **Clustering (`src/cluster.py`)**: First reduces the dimensionality of the embeddings using **UMAP**, then groups the repositories into emergent categories using **HDBSCAN**. This allows us to discover natural clusters without needing to pre-define how many clusters exist, while smartly isolating noise.
 4. **Trend Continuity (`src/match.py`)**: Solves the "cluster continuity problem" by using Jaccard similarity to match this week's clusters against historical data. This lets us track a cluster's growth, velocity, and acceleration over time.
 5. **Semantic Labeling (`src/label.py`)**: Automatically assigns human-readable titles (e.g., "AI Agent Orchestration Frameworks" or "Local Inference Runtimes") to brand-new emergent clusters using `gpt-4o-mini`.
 6. **Visualization (`src/tsne.py`)**: Projects the high-dimensional embeddings down to 2D using **t-SNE** and generates a clean, labeled scatter plot (`clusters.png`) of the current AI landscape.
@@ -24,7 +24,7 @@ The pipeline runs through a robust 7-step process orchestrated by `main.py`:
 1. Clone the repository.
 2. Install the required Python packages (e.g., in a `.venv`):
    ```bash
-   pip install requests openai scikit-learn numpy matplotlib python-dotenv
+   pip install requests openai scikit-learn numpy matplotlib python-dotenv umap-learn
    ```
 3. Create a `.env` file in the root directory with your API keys:
    ```env

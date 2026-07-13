@@ -3,8 +3,9 @@ import json
 import numpy as np
 from datetime import datetime
 from sklearn.cluster import HDBSCAN
+import umap
 
-def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_cluster_size=2, keep_archive=False):
+def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_cluster_size=3, keep_archive=False):
     """
     Reads repositories with embeddings from a JSONL file,
     clusters them using HDBSCAN, and updates the file with a 'cluster_id' key.
@@ -36,9 +37,12 @@ def cluster_repos(input_file="trending_repos.jsonl", output_file=None, min_clust
     
     X = np.array(valid_embeddings)
     
+    reducer = umap.UMAP(n_components=5, random_state=42, metric='cosine', n_jobs=1)
+    X_reduced = reducer.fit_transform(X)
+    
     print(f"Clustering {len(valid_indices)} embeddings using HDBSCAN...")
-    hdb = HDBSCAN(min_cluster_size=min_cluster_size, copy=True)
-    labels = hdb.fit_predict(X)
+    hdb = HDBSCAN(min_cluster_size=min_cluster_size, min_samples=2, copy=True)
+    labels = hdb.fit_predict(X_reduced)
     
     for idx, label in zip(valid_indices, labels):
         repos[idx]["cluster_id"] = int(label)

@@ -19,7 +19,7 @@ if __name__ == "__main__":
     generate_embeddings()
 
     print("\n--- Step 3: Clustering Repositories ---")
-    cluster_repos(min_cluster_size=2, keep_archive=False)
+    cluster_repos(min_cluster_size=5, keep_archive=False)
     
     print("\n--- Step 4: Tracking Trend Continuity ---")
     match_cluster_continuity()

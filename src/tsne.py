@@ -46,13 +46,24 @@ def visualize_clusters(input_file="trending_repos.jsonl", output_image="clusters
     tsne = TSNE(n_components=2, perplexity=perplexity, random_state=42)
     X_2d = tsne.fit_transform(X)
     
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(16, 10))
     
     category_names = {}
+    cluster_groups = {}
     for repo in repos:
         c_id = repo.get("cluster_id", -1)
-        if c_id != -1 and c_id not in category_names:
-            category_names[c_id] = repo.get("category_label", f"Cluster {c_id}")
+        if c_id != -1:
+            if c_id not in category_names:
+                category_names[c_id] = repo.get("category_label", f"Cluster {c_id}")
+            if c_id not in cluster_groups:
+                cluster_groups[c_id] = []
+            cluster_groups[c_id].append(repo)
+            
+    # Find the top repo (by stars) for each cluster to keep annotations clean
+    top_repos_to_annotate = set()
+    for c_id, group in cluster_groups.items():
+        top_repo = max(group, key=lambda x: x.get("stargazers_count", 0))
+        top_repos_to_annotate.add(top_repo.get("name"))
 
     unique_labels = set(labels)
     for cluster_id in unique_labels:
@@ -69,7 +80,7 @@ def visualize_clusters(input_file="trending_repos.jsonl", output_image="clusters
         )
             
     for i, name in enumerate(names):
-        if labels[i] == -1:
+        if labels[i] == -1 or name not in top_repos_to_annotate:
             continue
             
         plt.annotate(
@@ -78,14 +89,15 @@ def visualize_clusters(input_file="trending_repos.jsonl", output_image="clusters
             xytext=(5, 5), 
             textcoords='offset points', 
             fontsize=9, 
-            alpha=0.7
+            alpha=0.8,
+            fontweight='bold'
         )
         
     plt.title("t-SNE Visualization of Repository Clusters")
     plt.xlabel("t-SNE Component 1")
     plt.ylabel("t-SNE Component 2")
     
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., ncol=2, fontsize=9)
     plt.grid(True, linestyle='--', alpha=0.5)
     
     plt.tight_layout()
