@@ -1,4 +1,4 @@
-# GitHub AI Trend Tracker (AI Pulse)
+# GitHub AI Trend Tracker
 
 **GitHub AI Trend Tracker** tracks the shape of the AI world through raw GitHub activity. Instead of relying on hype threads or news aggregators, it uses what developers are *actually building* as ground truth. New techniques, frameworks, and ideas show up as repositories before they show up anywhere else. This project turns that raw signal into a readable, ongoing trend map.
 
