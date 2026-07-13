@@ -6,7 +6,7 @@ It answers the question: *"What's actually heating up in AI right now, based on 
 
 By letting clusters emerge organically rather than forcing repositories into hardcoded categories (like "LLMs" or "computer vision"), the tracker discovers brand-new AI categories as soon as they appear in the wild.
 
-> **Curious about current 2026 AI trends (YTD July)?** Check out the visual map in [`clusters.png`](clusters.png) or dive into the exported data in the [`trends/`](trends/) directory.
+> **Curious about current 2026 AI trends (YTD July)?** Check out the visual maps in [`trends/clusters.png`](trends/clusters.png) and [`trends/top_categories.png`](trends/top_categories.png), or dive into the exported data in the [`trends/`](trends/) directory.
 
 ## Features & Pipeline
 The pipeline runs through a robust 7-step process orchestrated by `main.py`:
@@ -16,7 +16,7 @@ The pipeline runs through a robust 7-step process orchestrated by `main.py`:
 3. **Clustering (`src/cluster.py`)**: First reduces the dimensionality of the embeddings using **UMAP**, then groups the repositories into emergent categories using **HDBSCAN**. This allows us to discover natural clusters without needing to pre-define how many clusters exist, while smartly isolating noise.
 4. **Trend Continuity (`src/match.py`)**: Solves the "cluster continuity problem" by using Jaccard similarity to match this week's clusters against historical data. This lets us track a cluster's growth, velocity, and acceleration over time.
 5. **Semantic Labeling (`src/label.py`)**: Automatically assigns human-readable titles (e.g., "AI Agent Orchestration Frameworks" or "Local Inference Runtimes") to brand-new emergent clusters using `gpt-4o-mini`.
-6. **Visualization (`src/tsne.py`)**: Projects the high-dimensional embeddings down to 2D using **t-SNE** and generates a clean, labeled scatter plot (`clusters.png`) of the current AI landscape.
+6. **Visualization (`src/tsne.py`)**: Projects the high-dimensional embeddings down to 2D using **t-SNE** and generates a clean, labeled scatter plot (`trends/clusters.png`) of the current AI landscape.
 7. **Export (`src/export.py`)**: Compiles all the processed data, historical metrics, and coordinates into a pristine JSON payload (`trends/trend-[timestamp].json`), ready to be plugged into an interactive front-end dashboard.
 
 ## Setup & Usage
