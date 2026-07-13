@@ -2,10 +2,9 @@
 
 **GitHub AI Trend Tracker** tracks the shape of the AI world through raw GitHub activity. Instead of relying on hype threads or news aggregators, it uses what developers are *actually building* as ground truth. New techniques, frameworks, and ideas show up as repositories before they show up anywhere else. This project turns that raw signal into a readable, ongoing trend map.
 
-The end goal is a public dashboard that answers: *"What's actually heating up in AI right now, based on what people are building?"*
+It answers the question: *"What's actually heating up in AI right now, based on what people are building?"*
 
-## Why Emergent Clustering?
-Fixed categories like "LLM," "computer vision," or "agents" go stale fast — the field moves too quickly for a hardcoded taxonomy. Letting clusters emerge organically means the tool discovers new categories as they appear, rather than forcing new ideas into old boxes.
+By letting clusters emerge organically rather than forcing repositories into hardcoded categories (like "LLMs" or "computer vision"), the tracker discovers brand-new AI categories as soon as they appear in the wild.
 
 ## Features & Pipeline
 The pipeline runs through a robust 7-step process orchestrated by `main.py`:
