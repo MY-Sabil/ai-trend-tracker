@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from src.ingest import get_trending_repos
 from src.embed import generate_embeddings
 from src.cluster import cluster_repos
@@ -7,10 +8,13 @@ from src.tsne import visualize_clusters
 from src.export import export_trends
 
 if __name__ == "__main__":
+    last_week = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+    query_str = f"created:>{last_week}"
+    
     print("--- Step 1: Fetching Repositories ---")
     get_trending_repos(
-        query="created:>2026-01-01",
-        total_items=700,
+        query=query_str,
+        total_items=200,
         truncate_readme=2000,
         keep_archive=True
     )
